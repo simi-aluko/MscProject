@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:msc_project/utils.dart';
+import 'package:msc_project/app_utils.dart';
 
-import 'app_drawer.dart';
+import '../widgets/app_drawer.dart';
 
 class HomePage extends StatelessWidget {
   final String title;

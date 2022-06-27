@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:msc_project/utils.dart';
+import 'package:msc_project/app_utils.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({
@@ -10,38 +10,49 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        children: [
-          UserAccountsDrawerHeader(
-            accountName: const Text("HealthCompany.co"),
-            accountEmail: const Text("healthcompany@appmaking.co"),
-            currentAccountPicture: CircleAvatar(
-              child: Image.asset(
-                imgHospBuilding,
-                height: 45,
-              ),
-            ),
-            decoration: const BoxDecoration(
-              color: Color(0xff384656),
-            ),
-          ),
-          const DrawerListTile(
+        children: const [
+          DrawerHeader(),
+          DrawerListTile(
             icon: imgLiver,
             title: liver,
           ),
-          const DrawerListTile(
+          DrawerListTile(
             icon: imgPancreas,
             title: pancreas,
           ),
-          const DrawerListTile(
+          DrawerListTile(
             icon: imgHeart,
             title: heart,
           ),
-          const Divider(),
-          const DrawerListTile(
+          Divider(),
+          DrawerListTile(
             icon: imgBox,
             title: addScubaBox,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class DrawerHeader extends StatelessWidget {
+  const DrawerHeader({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return UserAccountsDrawerHeader(
+      accountName: const Text("HealthCompany.co"),
+      accountEmail: const Text("healthcompany@appmaking.co"),
+      currentAccountPicture: CircleAvatar(
+        child: Image.asset(
+          imgHospBuilding,
+          height: 45,
+        ),
+      ),
+      decoration: const BoxDecoration(
+        color: Color(0xff384656),
       ),
     );
   }

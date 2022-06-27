@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:msc_project/utils.dart';
+import 'package:msc_project/app_utils.dart';
 
-import 'home_page.dart';
+import 'pages/home_page.dart';
 
 void main() {
   runApp(const MyApp());
