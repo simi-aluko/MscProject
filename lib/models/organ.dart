@@ -1,16 +1,20 @@
 import 'package:equatable/equatable.dart';
 
 class Organ extends Equatable {
-  final String name;
   final String id;
-  final String icon;
+  final OrganType organType;
 
   const Organ({
-    required this.name,
     required this.id,
-    required this.icon,
+    required this.organType,
   });
 
   @override
   List<Object?> get props => [];
+}
+
+enum OrganType {
+  liver,
+  kidney,
+  heart,
 }

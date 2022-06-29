@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:msc_project/app_utils.dart';
-
+import 'injection_container.dart' as di;
 import 'pages/home_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
   runApp(const MyApp());
 }
 
