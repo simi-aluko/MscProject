@@ -39,3 +39,11 @@ const imgHeart = 'assets/images/heart.png';
 const imgPancreas = 'assets/images/pancreas.png';
 const imgLiver = 'assets/images/liver.png';
 const imgHospBuilding = 'assets/images/hospital-building.png';
+
+SizedBox heightSizedBox(double space) {
+  return SizedBox(height: space);
+}
+
+SizedBox widthSizedBox(double space) {
+  return SizedBox(width: space);
+}

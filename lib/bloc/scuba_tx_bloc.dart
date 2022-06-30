@@ -20,7 +20,17 @@ class ScubaTxBloc extends Bloc<ScubaTxEvent, ScubaTxState> {
 
   scubaTxStateEmitter(ScubaTxEvent event, Emitter<ScubaTxState> emitter) async {
     if (event is GetAllOrgans) {
+      emit(Loading());
+      List<ScubaBox> scubaBoxes = scubaTxBoxUseCase.getAllScubaBoxes();
+      emit(Loaded(scubaBoxes));
     } else if (event is GetOrgan) {
-    } else if (event is GetOrgansByType) {}
+      emit(Loading());
+      List<ScubaBox> scubaBoxes = scubaTxBoxUseCase.getScubaBoxById(event.organId);
+      emit(Loaded(scubaBoxes));
+    } else if (event is GetOrgansByType) {
+      emit(Loading());
+      List<ScubaBox> scubaBoxes = scubaTxBoxUseCase.getScubaBoxByOrgan(event.organType);
+      emit(Loaded(scubaBoxes));
+    }
   }
 }

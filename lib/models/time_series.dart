@@ -13,8 +13,8 @@ class TimeSeries extends Equatable {
 }
 
 class ChannelData extends Equatable {
-  final Queue<TimeSeries> pressure;
-  final Queue<TimeSeries> flow;
+  final List<TimeSeries> pressure;
+  final List<TimeSeries> flow;
 
   const ChannelData({required this.pressure, required this.flow});
 

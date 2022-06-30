@@ -15,6 +15,6 @@ class Organ extends Equatable {
 
 enum OrganType {
   liver,
-  kidney,
+  pancreas,
   heart,
 }

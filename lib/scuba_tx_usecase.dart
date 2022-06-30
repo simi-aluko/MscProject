@@ -22,7 +22,7 @@ class ScubaTxBoxUseCase {
       ScubaBox(channelData1, channelData2, channelData3,
           id: "1", temperature: "30º", gas: "40%", battery: "80%", organ: OrganType.liver),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "2", temperature: "40º", gas: "100%", battery: "50%", organ: OrganType.kidney),
+          id: "2", temperature: "40º", gas: "100%", battery: "50%", organ: OrganType.pancreas),
       ScubaBox(channelData1, channelData2, channelData3,
           id: "3", temperature: "50º", gas: "40%", battery: "90%", organ: OrganType.liver),
       ScubaBox(channelData1, channelData2, channelData3,
@@ -30,7 +30,7 @@ class ScubaTxBoxUseCase {
       ScubaBox(channelData1, channelData2, channelData3,
           id: "5", temperature: "70º", gas: "100%", battery: "30%", organ: OrganType.heart),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "6", temperature: "80º", gas: "40%", battery: "50%", organ: OrganType.kidney),
+          id: "6", temperature: "80º", gas: "40%", battery: "50%", organ: OrganType.pancreas),
     ];
   }
 
@@ -42,13 +42,17 @@ class ScubaTxBoxUseCase {
     return defaultScubaBoxes.where((element) => element.organ == organType).toList();
   }
 
+  List<ScubaBox> getScubaBoxById(String id) {
+    return defaultScubaBoxes.where((element) => element.id == id).toList();
+  }
+
   ChannelData getChannel1Data() => _getChannelData(pressureCol: 6, flowCol: 7);
   ChannelData getChannel2Data() => _getChannelData(pressureCol: 13, flowCol: 14);
   ChannelData getChannel3Data() => _getChannelData(pressureCol: 20, flowCol: 21);
 
   ChannelData _getChannelData({required int pressureCol, required int flowCol}) {
-    Queue<TimeSeries> pressure = Queue<TimeSeries>();
-    Queue<TimeSeries> flow = Queue<TimeSeries>();
+    List<TimeSeries> pressure = <TimeSeries>[];
+    List<TimeSeries> flow = <TimeSeries>[];
 
     for (int i = 0; i < csvAsList.length; i++) {
       if (i == 0) continue;

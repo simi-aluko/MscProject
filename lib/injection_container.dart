@@ -10,8 +10,8 @@ init() async {
 
   sl.registerLazySingleton(() => ScubaTxBoxUseCase(sl()));
 
+  sl.registerLazySingleton(() => const CsvToListConverter());
+
   final csvAsList = await ReadCSV(csvToListConverter: sl()).readCSV();
   sl.registerLazySingleton(() => csvAsList);
-
-  sl.registerLazySingleton(() => const CsvToListConverter());
 }
