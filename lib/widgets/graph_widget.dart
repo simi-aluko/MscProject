@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import '../models/scuba_box.dart';
 import '../models/time_series.dart';
 
 class GraphWidget extends StatefulWidget {
@@ -122,5 +123,46 @@ class _GraphWidgetState extends State<GraphWidget> with AutomaticKeepAliveClient
     super.initState();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => {timer = Timer.periodic(const Duration(milliseconds: 500), _updateDataSource)});
+  }
+}
+
+class GraphPagerWidget extends StatelessWidget {
+  const GraphPagerWidget({
+    Key? key,
+    required this.controller,
+    required this.context,
+    required this.scubaBox,
+  }) : super(key: key);
+
+  final PageController controller;
+  final BuildContext context;
+  final ScubaBox scubaBox;
+
+  @override
+  Widget build(BuildContext context) {
+    print("Graph changes");
+    return SizedBox(
+      height: MediaQuery.of(context).size.height / 2,
+      child: PageView(
+        controller: controller,
+        children: [
+          GraphWidget(
+            pressureData: scubaBox.channel1.pressure,
+            flowData: scubaBox.channel1.flow,
+            channel: 1,
+          ),
+          GraphWidget(
+            pressureData: scubaBox.channel2.pressure,
+            flowData: scubaBox.channel2.flow,
+            channel: 2,
+          ),
+          GraphWidget(
+            pressureData: scubaBox.channel3.pressure,
+            flowData: scubaBox.channel3.flow,
+            channel: 3,
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:msc_project/bloc/scuba_tx_bloc.dart';
+import 'package:msc_project/models/scuba_box.dart';
+import 'package:msc_project/pages/home_page.dart';
 
 import '../app_utils.dart';
 
 class OrganDropDown extends StatefulWidget {
-  final List<String> organs;
+  final Loaded state;
+  List<String> organs = [];
+  final Function updateState;
 
-  const OrganDropDown({super.key, required this.organs});
+  OrganDropDown({super.key, required this.state, required this.updateState}) {
+    organs = state.scubaBoxes.map((e) => "${e.organ.name} ${e.id}").toList();
+  }
 
   @override
   State<OrganDropDown> createState() => _OrganDropDownState();
@@ -38,6 +46,11 @@ class _OrganDropDownState extends State<OrganDropDown> {
               setState(() {
                 dropdownValue = newValue!;
               });
+
+              String currentScubaId = newValue!.split(" ")[1];
+              currentGlobalScubaBox =
+                  widget.state.scubaBoxes.where((element) => element.id == currentScubaId).toList()[0];
+              widget.updateState();
             },
             items: widget.organs.map<DropdownMenuItem<String>>((String value) {
               return buildDropdownMenuItem(value);
@@ -82,5 +95,26 @@ class _OrganDropDownState extends State<OrganDropDown> {
       default:
         return "";
     }
+  }
+}
+
+class DropDownWidget extends StatelessWidget {
+  const DropDownWidget({
+    Key? key,
+    required this.state,
+    required this.updateState,
+  }) : super(key: key);
+  final Loaded state;
+  final Function updateState;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: OrganDropDown(
+        state: state,
+        updateState: updateState,
+      ),
+    );
   }
 }

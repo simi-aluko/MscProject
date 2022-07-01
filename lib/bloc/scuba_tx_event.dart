@@ -20,3 +20,9 @@ class GetOrgan extends ScubaTxEvent {
 
   const GetOrgan(this.organId);
 }
+
+class CurrentChannel extends ScubaTxEvent {
+  final int channel;
+
+  const CurrentChannel(this.channel);
+}

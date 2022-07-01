@@ -9,20 +9,29 @@ import '../bloc/scuba_tx_bloc.dart';
 import '../injection_container.dart';
 import '../models/scuba_box.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/channel_control_widget.dart';
+import '../widgets/machine_properties_widget.dart';
 import '../widgets/no_scuba_boxes_widget.dart';
 import '../widgets/organ_dropdown_widget.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final String title;
-  final PageController controller = PageController();
-  int currentPage = 0;
 
   HomePage({super.key, required this.title});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final PageController controller = PageController();
+  int currentPage = 0;
+  void updateState() => setState(() {});
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(title),
+      appBar: appBar(widget.title),
       body: buildBody(context),
       drawer: const AppDrawer(),
     );
@@ -40,13 +49,14 @@ class HomePage extends StatelessWidget {
                 if (state is Loading) {
                   return const LoadingWidget();
                 } else if (state is Loaded) {
+                  currentGlobalScubaBox = state.scubaBoxes[0];
                   return Column(
                     children: [
-                      buildDropDown(context, state),
-                      buildChannelControls(),
-                      buildGraphPager(context, state),
+                      DropDownWidget(state: state, updateState: updateState),
+                      ChannelControlWidget(controller: controller),
+                      GraphPagerWidget(controller: controller, context: context, scubaBox: currentGlobalScubaBox!),
                       buildGraphPagerIndicator(),
-                      buildMachineProperties(state.scubaBoxes[0])
+                      MachinePropertiesWidget(scubaBox: currentGlobalScubaBox!)
                     ],
                   );
                 } else if (state is Empty) {
@@ -62,53 +72,11 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Row buildMachinePropertyItem(String property, String value) {
-    return Row(
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "$property: ",
-            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: Color(primaryColor)),
-          ),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green)),
-        ),
-      ],
-    );
-  }
-
-  Padding buildMachineProperties(ScubaBox scubaBox) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: buildMachinePropertyItem("Machine Id", scubaBox.id),
-              ),
-              Expanded(child: buildMachinePropertyItem("Temperature", scubaBox.temperature))
-            ],
-          ),
-          heightSizedBox(8),
-          Row(
-            children: [
-              Expanded(child: buildMachinePropertyItem("Gas", scubaBox.gas)),
-              Expanded(child: buildMachinePropertyItem("Battery", scubaBox.battery))
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
   Container buildGraphPagerIndicator() {
+    print("indicator changes");
     return Container(
       height: 20,
-      margin: EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.only(top: 10),
       alignment: Alignment.topCenter,
       child: SmoothPageIndicator(
         controller: controller,
@@ -119,52 +87,6 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-  SizedBox buildGraphPager(BuildContext context, Loaded state) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height / 2,
-      child: PageView(
-        controller: controller,
-        children: [
-          GraphWidget(
-            pressureData: state.scubaBoxes[0].channel1.pressure,
-            flowData: state.scubaBoxes[0].channel1.flow,
-            channel: 1,
-          ),
-          GraphWidget(
-            pressureData: state.scubaBoxes[0].channel2.pressure,
-            flowData: state.scubaBoxes[0].channel2.flow,
-            channel: 2,
-          ),
-          GraphWidget(
-            pressureData: state.scubaBoxes[0].channel3.pressure,
-            flowData: state.scubaBoxes[0].channel3.flow,
-            channel: 3,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Row buildChannelControls() {
-    return Row(
-      children: [
-        IconButton(icon: const Icon(Icons.arrow_left, size: 50), onPressed: () {}),
-        const Spacer(),
-        const Text(
-          "Channel",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-        ),
-        const Spacer(),
-        IconButton(icon: const Icon(Icons.arrow_right, size: 50), onPressed: () {}),
-      ],
-    );
-  }
-
-  SizedBox buildDropDown(BuildContext context, Loaded state) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: OrganDropDown(organs: state.scubaBoxes.map((e) => "${e.organ.name} ${e.id}").toList()),
-    );
-  }
 }
+
+ScubaBox? currentGlobalScubaBox;
