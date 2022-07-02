@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:msc_project/app_utils.dart';
 import 'package:msc_project/widgets/graph_widget.dart';
 import 'package:msc_project/widgets/loading_widget.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../bloc/scuba_tx_bloc.dart';
@@ -49,63 +50,101 @@ class _HomePageState extends State<HomePage> {
   }
 
   buildBody(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        children: <Widget>[
-          BlocConsumer<OrgansListBloc, OrgansListState>(
-            builder: (context, state) {
-              if (state is OrgansList) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Organs List: ${state.listType}",
-                      style: const TextStyle(fontWeight: FontWeight.w400),
-                    ),
-                    heightSizedBox(5),
-                    DropDownWidget(scubaBoxes: state.scubaBoxes),
-                  ],
-                );
-              }
-              return const DropDownWidget(scubaBoxes: []);
-            },
-            listener: (context, state) {
-              if (state is OrgansList && state.scubaBoxes.isNotEmpty) {
-                String organId = state.scubaBoxes.first.id;
-                BlocProvider.of<CurrentOrganBloc>(context).add(GetCurrentOrganEvent(organId));
-              }
-            },
+    return SlidingUpPanel(
+      minHeight: 70,
+      maxHeight: MediaQuery.of(context).size.height / 2,
+      borderRadius: radius,
+      panel: Column(
+        children: [
+          heightSizedBox(10),
+          const Image(
+            image: AssetImage(imgDownDirection),
+            color: Colors.black,
+            height: 20,
           ),
-          BlocBuilder<CurrentChannelBloc, ChannelControlsState>(
-            builder: (context, state) {
-              if (state is CurrentChannel) {
+          Expanded(
+            child: Center(
+              child: Container(
+                  decoration: BoxDecoration(color: Colors.white),
+                  child: const Text("Smart Audit Event logs would show here.")),
+            ),
+          ),
+        ],
+      ),
+      collapsed: Container(
+        decoration: BoxDecoration(color: const Color(primaryColor), borderRadius: radius),
+        child: Column(
+          children: [
+            heightSizedBox(10),
+            const Image(
+              image: AssetImage(imgUpDirection),
+              color: Colors.white,
+              height: 20,
+            ),
+            heightSizedBox(5),
+            const Text("Swipe up to view Smart Audit event logs", style: TextStyle(color: Colors.white)),
+            heightSizedBox(10),
+          ],
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: <Widget>[
+            BlocConsumer<OrgansListBloc, OrgansListState>(
+              builder: (context, state) {
+                if (state is OrgansList) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Organs List: ${state.listType}",
+                        style: const TextStyle(fontWeight: FontWeight.w400),
+                      ),
+                      heightSizedBox(5),
+                      DropDownWidget(scubaBoxes: state.scubaBoxes),
+                    ],
+                  );
+                }
+                return const DropDownWidget(scubaBoxes: []);
+              },
+              listener: (context, state) {
+                if (state is OrgansList && state.scubaBoxes.isNotEmpty) {
+                  String organId = state.scubaBoxes.first.id;
+                  BlocProvider.of<CurrentOrganBloc>(context).add(GetCurrentOrganEvent(organId));
+                }
+              },
+            ),
+            BlocBuilder<CurrentChannelBloc, ChannelControlsState>(
+              builder: (context, state) {
+                if (state is CurrentChannel) {
+                  return ChannelControlWidget(
+                    controller: controller,
+                    currentChannel: state.channel,
+                  );
+                }
                 return ChannelControlWidget(
                   controller: controller,
-                  currentChannel: state.channel,
+                  currentChannel: 1,
                 );
-              }
-              return ChannelControlWidget(
-                controller: controller,
-                currentChannel: 1,
-              );
-            },
-          ),
-          BlocBuilder<CurrentOrganBloc, CurrentOrganState>(
-            builder: (context, state) {
-              if (state is CurrentOrgan) {
-                return Column(
-                  children: [
-                    GraphPagerWidget(controller: controller, context: context, scubaBox: state.scubaBox),
-                    buildGraphPagerIndicator(),
-                    MachinePropertiesWidget(scubaBox: state.scubaBox)
-                  ],
-                );
-              }
-              return const SizedBox();
-            },
-          )
-        ],
+              },
+            ),
+            BlocBuilder<CurrentOrganBloc, CurrentOrganState>(
+              builder: (context, state) {
+                if (state is CurrentOrgan) {
+                  return Column(
+                    children: [
+                      GraphPagerWidget(controller: controller, context: context, scubaBox: state.scubaBox),
+                      buildGraphPagerIndicator(),
+                      MachinePropertiesWidget(scubaBox: state.scubaBox)
+                    ],
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

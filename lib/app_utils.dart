@@ -40,7 +40,10 @@ const imgPancreas = 'assets/images/pancreas.png';
 const imgLiver = 'assets/images/liver.png';
 const imgHospBuilding = 'assets/images/hospital-building.png';
 const imgAll = 'assets/images/select-all.png';
+const imgUpDirection = "assets/images/up-direction.png";
+const imgDownDirection = "assets/images/down-direction.png";
 
+// UI
 SizedBox heightSizedBox(double space) {
   return SizedBox(height: space);
 }
@@ -48,3 +51,8 @@ SizedBox heightSizedBox(double space) {
 SizedBox widthSizedBox(double space) {
   return SizedBox(width: space);
 }
+
+BorderRadiusGeometry radius = const BorderRadius.only(
+  topLeft: Radius.circular(12.0),
+  topRight: Radius.circular(12.0),
+);
