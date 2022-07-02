@@ -7,12 +7,11 @@ import 'package:msc_project/pages/home_page.dart';
 import '../app_utils.dart';
 
 class OrganDropDown extends StatefulWidget {
-  final Loaded state;
+  final List<ScubaBox> scubaBoxes;
   List<String> organs = [];
-  final Function updateState;
 
-  OrganDropDown({super.key, required this.state, required this.updateState}) {
-    organs = state.scubaBoxes.map((e) => "${e.organ.name} ${e.id}").toList();
+  OrganDropDown({super.key, required this.scubaBoxes}) {
+    organs = scubaBoxes.map((e) => "${e.organ.name} ${e.id}").toList();
   }
 
   @override
@@ -35,7 +34,7 @@ class _OrganDropDownState extends State<OrganDropDown> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
           child: DropdownButton<String>(
-            value: dropdownValue.isNotEmpty ? dropdownValue : null,
+            value: dropdownValue.isNotEmpty ? dropdownValue : widget.organs.first,
             hint: const Text('-- Select Organ --'),
             isExpanded: true,
             icon: const Icon(Icons.arrow_drop_down),
@@ -46,11 +45,8 @@ class _OrganDropDownState extends State<OrganDropDown> {
               setState(() {
                 dropdownValue = newValue!;
               });
-
               String currentScubaId = newValue!.split(" ")[1];
-              currentGlobalScubaBox =
-                  widget.state.scubaBoxes.where((element) => element.id == currentScubaId).toList()[0];
-              widget.updateState();
+              BlocProvider.of<CurrentOrganBloc>(context).add(GetCurrentOrganEvent(currentScubaId));
             },
             items: widget.organs.map<DropdownMenuItem<String>>((String value) {
               return buildDropdownMenuItem(value);
@@ -67,7 +63,7 @@ class _OrganDropDownState extends State<OrganDropDown> {
       child: Row(
         children: [
           Image(
-            image: AssetImage(getIcon(value)),
+            image: AssetImage(getIcon(value.toLowerCase())),
             height: 20,
             alignment: Alignment.centerRight,
           ),
@@ -101,19 +97,16 @@ class _OrganDropDownState extends State<OrganDropDown> {
 class DropDownWidget extends StatelessWidget {
   const DropDownWidget({
     Key? key,
-    required this.state,
-    required this.updateState,
+    required this.scubaBoxes,
   }) : super(key: key);
-  final Loaded state;
-  final Function updateState;
+  final List<ScubaBox> scubaBoxes;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: OrganDropDown(
-        state: state,
-        updateState: updateState,
+        scubaBoxes: scubaBoxes,
       ),
     );
   }

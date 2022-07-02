@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:msc_project/bloc/scuba_tx_bloc.dart';
 
 class ChannelControlWidget extends StatefulWidget {
-  const ChannelControlWidget({
-    Key? key,
-    required this.controller,
-  }) : super(key: key);
+  const ChannelControlWidget({Key? key, required this.controller, required this.currentChannel}) : super(key: key);
 
   final PageController controller;
+  final int currentChannel;
 
   @override
   State<ChannelControlWidget> createState() => _ChannelControlWidgetState();
 }
 
 class _ChannelControlWidgetState extends State<ChannelControlWidget> {
-  int currentPage = 1;
-  String currentChannel = "Channel 1";
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -24,15 +21,11 @@ class _ChannelControlWidgetState extends State<ChannelControlWidget> {
             icon: const Icon(Icons.arrow_left, size: 50),
             onPressed: () {
               widget.controller.previousPage(duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
-              setState(() {
-                if (currentPage > 1) {
-                  currentChannel = "Channel ${currentPage = currentPage - 1}";
-                }
-              });
+              BlocProvider.of<CurrentChannelBloc>(context).add(PrevChannelEvent());
             }),
         const Spacer(),
         Text(
-          currentChannel,
+          "Channel ${widget.currentChannel}",
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
         const Spacer(),
@@ -40,11 +33,7 @@ class _ChannelControlWidgetState extends State<ChannelControlWidget> {
             icon: const Icon(Icons.arrow_right, size: 50),
             onPressed: () {
               widget.controller.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
-              setState(() {
-                if (currentPage < 3) {
-                  currentChannel = "Channel ${currentPage = currentPage + 1}";
-                }
-              });
+              BlocProvider.of<CurrentChannelBloc>(context).add(NextChannelEvent());
             }),
       ],
     );

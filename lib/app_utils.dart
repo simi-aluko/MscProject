@@ -23,7 +23,6 @@ AppBar appBar(String title) => AppBar(
       title: Text(title),
       actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.settings))],
     );
-//
 
 // Strings
 const liver = "Liver";
@@ -32,6 +31,7 @@ const heart = "Heart";
 const addScubaBox = "Add ScubaTx Box";
 const organs = "Organs";
 const settings = "Settings";
+const allOrgans = "All";
 
 // Assets
 const imgBox = 'assets/images/box.png';
@@ -39,6 +39,7 @@ const imgHeart = 'assets/images/heart.png';
 const imgPancreas = 'assets/images/pancreas.png';
 const imgLiver = 'assets/images/liver.png';
 const imgHospBuilding = 'assets/images/hospital-building.png';
+const imgAll = 'assets/images/select-all.png';
 
 SizedBox heightSizedBox(double space) {
   return SizedBox(height: space);

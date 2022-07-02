@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:msc_project/app_utils.dart';
+import 'package:msc_project/bloc/scuba_tx_bloc.dart';
+import 'package:msc_project/models/organ.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({
@@ -10,19 +13,26 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        children: const [
+        children: [
           DrawerHeader(),
           DrawerListTile(
             icon: imgLiver,
             title: liver,
+            organType: OrganType.Liver,
           ),
           DrawerListTile(
             icon: imgPancreas,
             title: pancreas,
+            organType: OrganType.Pancreas,
           ),
           DrawerListTile(
             icon: imgHeart,
             title: heart,
+            organType: OrganType.Heart,
+          ),
+          DrawerListTile(
+            icon: imgAll,
+            title: allOrgans,
           ),
           Divider(),
           DrawerListTile(
@@ -61,7 +71,8 @@ class DrawerHeader extends StatelessWidget {
 class DrawerListTile extends StatelessWidget {
   final String icon;
   final String title;
-  const DrawerListTile({super.key, required this.icon, required this.title});
+  OrganType? organType;
+  DrawerListTile({super.key, required this.icon, required this.title, this.organType});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +90,13 @@ class DrawerListTile extends StatelessWidget {
         ),
       ),
       minLeadingWidth: 10,
-      onTap: () {},
+      onTap: () {
+        if (organType != null) {
+          BlocProvider.of<OrgansListBloc>(context).add(GetOrgansByTypeEvent(organType!));
+        } else if (title == allOrgans) {
+          BlocProvider.of<OrgansListBloc>(context).add(GetAllOrgansEvent());
+        }
+      },
     );
   }
 }

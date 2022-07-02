@@ -20,17 +20,17 @@ class ScubaTxBoxUseCase {
     channelData3 = getChannel3Data();
     defaultScubaBoxes = [
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "1", temperature: "30º", gas: "40%", battery: "80%", organ: OrganType.liver),
+          id: "ID1", temperature: "30º", gas: "40%", battery: "80%", organ: OrganType.Liver),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "2", temperature: "40º", gas: "100%", battery: "50%", organ: OrganType.pancreas),
+          id: "ID2", temperature: "50º", gas: "40%", battery: "90%", organ: OrganType.Liver),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "3", temperature: "50º", gas: "40%", battery: "90%", organ: OrganType.liver),
+          id: "ID3", temperature: "40º", gas: "100%", battery: "50%", organ: OrganType.Pancreas),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "4", temperature: "60º", gas: "100%", battery: "10%", organ: OrganType.heart),
+          id: "ID4", temperature: "80º", gas: "40%", battery: "50%", organ: OrganType.Pancreas),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "5", temperature: "70º", gas: "100%", battery: "30%", organ: OrganType.heart),
+          id: "ID5", temperature: "60º", gas: "100%", battery: "10%", organ: OrganType.Heart),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "6", temperature: "80º", gas: "40%", battery: "50%", organ: OrganType.pancreas),
+          id: "ID6", temperature: "70º", gas: "100%", battery: "30%", organ: OrganType.Heart),
     ];
   }
 
@@ -42,8 +42,8 @@ class ScubaTxBoxUseCase {
     return defaultScubaBoxes.where((element) => element.organ == organType).toList();
   }
 
-  List<ScubaBox> getScubaBoxById(String id) {
-    return defaultScubaBoxes.where((element) => element.id == id).toList();
+  ScubaBox getScubaBoxById(String id) {
+    return defaultScubaBoxes.where((element) => element.id == id).toList()[0];
   }
 
   ChannelData getChannel1Data() => _getChannelData(pressureCol: 6, flowCol: 7);

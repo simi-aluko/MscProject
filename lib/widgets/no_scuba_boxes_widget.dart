@@ -44,6 +44,6 @@ class _NoScubaBoxesState extends State<NoScubaBoxes> {
   }
 
   void getScubaBoxes() {
-    BlocProvider.of<ScubaTxBloc>(context).add(GetAllOrgans());
+    BlocProvider.of<OrgansListBloc>(context).add(GetAllOrgansEvent());
   }
 }

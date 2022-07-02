@@ -25,55 +25,92 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final PageController controller = PageController();
-  int currentPage = 0;
-  void updateState() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(widget.title),
-      body: buildBody(context),
-      drawer: const AppDrawer(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<OrgansListBloc>(
+          create: (_) => sl<OrgansListBloc>()..add(GetAllOrgansEvent()),
+        ),
+        BlocProvider<CurrentChannelBloc>(
+          create: (_) => sl<CurrentChannelBloc>(),
+        ),
+        BlocProvider<CurrentOrganBloc>(
+          create: (_) => sl<CurrentOrganBloc>(),
+        ),
+      ],
+      child: Scaffold(
+        appBar: appBar(widget.title),
+        body: buildBody(context),
+        drawer: const AppDrawer(),
+      ),
     );
   }
 
-  BlocProvider<ScubaTxBloc> buildBody(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ScubaTxBloc>(),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            children: <Widget>[
-              BlocBuilder<ScubaTxBloc, ScubaTxState>(builder: (context, state) {
-                if (state is Loading) {
-                  return const LoadingWidget();
-                } else if (state is Loaded) {
-                  currentGlobalScubaBox = state.scubaBoxes[0];
-                  return Column(
-                    children: [
-                      DropDownWidget(state: state, updateState: updateState),
-                      ChannelControlWidget(controller: controller),
-                      GraphPagerWidget(controller: controller, context: context, scubaBox: currentGlobalScubaBox!),
-                      buildGraphPagerIndicator(),
-                      MachinePropertiesWidget(scubaBox: currentGlobalScubaBox!)
-                    ],
-                  );
-                } else if (state is Empty) {
-                  return const NoScubaBoxes();
-                } else {
-                  return const LoadingWidget();
-                }
-              }),
-            ],
+  buildBody(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        children: <Widget>[
+          BlocConsumer<OrgansListBloc, OrgansListState>(
+            builder: (context, state) {
+              if (state is OrgansList) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Organs List: ${state.listType}",
+                      style: const TextStyle(fontWeight: FontWeight.w400),
+                    ),
+                    heightSizedBox(5),
+                    DropDownWidget(scubaBoxes: state.scubaBoxes),
+                  ],
+                );
+              }
+              return const DropDownWidget(scubaBoxes: []);
+            },
+            listener: (context, state) {
+              if (state is OrgansList && state.scubaBoxes.isNotEmpty) {
+                String organId = state.scubaBoxes.first.id;
+                BlocProvider.of<CurrentOrganBloc>(context).add(GetCurrentOrganEvent(organId));
+              }
+            },
           ),
-        ),
+          BlocBuilder<CurrentChannelBloc, ChannelControlsState>(
+            builder: (context, state) {
+              if (state is CurrentChannel) {
+                return ChannelControlWidget(
+                  controller: controller,
+                  currentChannel: state.channel,
+                );
+              }
+              return ChannelControlWidget(
+                controller: controller,
+                currentChannel: 1,
+              );
+            },
+          ),
+          BlocBuilder<CurrentOrganBloc, CurrentOrganState>(
+            builder: (context, state) {
+              if (state is CurrentOrgan) {
+                return Column(
+                  children: [
+                    GraphPagerWidget(controller: controller, context: context, scubaBox: state.scubaBox),
+                    buildGraphPagerIndicator(),
+                    MachinePropertiesWidget(scubaBox: state.scubaBox)
+                  ],
+                );
+              }
+              return const SizedBox();
+            },
+          )
+        ],
       ),
     );
   }
 
   Container buildGraphPagerIndicator() {
-    print("indicator changes");
     return Container(
       height: 20,
       margin: const EdgeInsets.only(top: 10),
@@ -88,5 +125,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-ScubaBox? currentGlobalScubaBox;

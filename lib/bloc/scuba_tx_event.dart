@@ -1,28 +1,43 @@
 part of 'scuba_tx_bloc.dart';
 
-abstract class ScubaTxEvent extends Equatable {
-  const ScubaTxEvent();
+// Organs List Event
+abstract class OrgansListEvent extends Equatable {
+  const OrgansListEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class GetAllOrgans extends ScubaTxEvent {}
+class GetAllOrgansEvent extends OrgansListEvent {}
 
-class GetOrgansByType extends ScubaTxEvent {
+class GetOrgansByTypeEvent extends OrgansListEvent {
   final OrganType organType;
 
-  const GetOrgansByType(this.organType);
+  const GetOrgansByTypeEvent(this.organType);
 }
 
-class GetOrgan extends ScubaTxEvent {
+// Current Organ Event
+abstract class CurrentOrganEvent extends Equatable {
+  const CurrentOrganEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class GetCurrentOrganEvent extends CurrentOrganEvent {
   final String organId;
 
-  const GetOrgan(this.organId);
+  const GetCurrentOrganEvent(this.organId);
 }
 
-class CurrentChannel extends ScubaTxEvent {
-  final int channel;
+// Channel Controls Event
+class PrevChannelEvent extends ChannelControlsEvent {}
 
-  const CurrentChannel(this.channel);
+class NextChannelEvent extends ChannelControlsEvent {}
+
+abstract class ChannelControlsEvent extends Equatable {
+  const ChannelControlsEvent();
+
+  @override
+  List<Object?> get props => [];
 }

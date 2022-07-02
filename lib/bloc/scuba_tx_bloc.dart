@@ -1,36 +1,66 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:msc_project/app_utils.dart';
 import 'package:msc_project/models/organ.dart';
 import 'package:msc_project/models/scuba_box.dart';
+import 'package:msc_project/models/time_series.dart';
 import 'package:msc_project/scuba_tx_usecase.dart';
 
 part 'scuba_tx_event.dart';
 part 'scuba_tx_state.dart';
 
-class ScubaTxBloc extends Bloc<ScubaTxEvent, ScubaTxState> {
+class OrgansListBloc extends Bloc<OrgansListEvent, OrgansListState> {
   final ScubaTxBoxUseCase scubaTxBoxUseCase;
 
-  ScubaTxBloc({
+  OrgansListBloc({
     required this.scubaTxBoxUseCase,
-  }) : super(Empty()) {
-    on<ScubaTxEvent>(scubaTxStateEmitter);
+  }) : super(EmptyOrgansList()) {
+    on<OrgansListEvent>(organsListEmitter);
   }
 
-  scubaTxStateEmitter(ScubaTxEvent event, Emitter<ScubaTxState> emitter) async {
-    if (event is GetAllOrgans) {
-      emit(Loading());
+  organsListEmitter(OrgansListEvent event, Emitter<OrgansListState> emitter) async {
+    if (event is GetAllOrgansEvent) {
       List<ScubaBox> scubaBoxes = scubaTxBoxUseCase.getAllScubaBoxes();
-      emit(Loaded(scubaBoxes));
-    } else if (event is GetOrgan) {
-      emit(Loading());
-      List<ScubaBox> scubaBoxes = scubaTxBoxUseCase.getScubaBoxById(event.organId);
-      emit(Loaded(scubaBoxes));
-    } else if (event is GetOrgansByType) {
-      emit(Loading());
+      emit(OrgansList(scubaBoxes: scubaBoxes, listType: allOrgans));
+    } else if (event is GetOrgansByTypeEvent) {
       List<ScubaBox> scubaBoxes = scubaTxBoxUseCase.getScubaBoxByOrgan(event.organType);
-      emit(Loaded(scubaBoxes));
+      emit(OrgansList(scubaBoxes: scubaBoxes, listType: event.organType.name));
+    }
+  }
+}
+
+class CurrentOrganBloc extends Bloc<CurrentOrganEvent, CurrentOrganState> {
+  final ScubaTxBoxUseCase scubaTxBoxUseCase;
+
+  CurrentOrganBloc({required this.scubaTxBoxUseCase}) : super(EmptyCurrentOrgan()) {
+    on<CurrentOrganEvent>(currentOrganEmitter);
+  }
+
+  currentOrganEmitter(CurrentOrganEvent event, Emitter<CurrentOrganState> emitter) async {
+    if (event is GetCurrentOrganEvent) {
+      ScubaBox scubaBox = scubaTxBoxUseCase.getScubaBoxById(event.organId);
+      emit(CurrentOrgan(scubaBox: scubaBox));
+    }
+  }
+}
+
+class CurrentChannelBloc extends Bloc<ChannelControlsEvent, ChannelControlsState> {
+  CurrentChannelBloc() : super(const CurrentChannel(channel: 1)) {
+    on<ChannelControlsEvent>(channelControlEmitter);
+  }
+
+  channelControlEmitter(ChannelControlsEvent event, Emitter<ChannelControlsState> emitter) async {
+    if (event is PrevChannelEvent) {
+      if (state.channel > 1) {
+        emit(CurrentChannel(channel: state.channel - 1));
+      }
+    } else if (event is NextChannelEvent) {
+      if (state.channel < 3) {
+        emit(CurrentChannel(channel: state.channel + 1));
+      }
     }
   }
 }
