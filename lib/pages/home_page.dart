@@ -87,63 +87,67 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: <Widget>[
-            BlocConsumer<OrgansListBloc, OrgansListState>(
-              builder: (context, state) {
-                if (state is OrgansList) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Organs List: ${state.listType}",
-                        style: const TextStyle(fontWeight: FontWeight.w400),
-                      ),
-                      heightSizedBox(5),
-                      DropDownWidget(scubaBoxes: state.scubaBoxes),
-                    ],
-                  );
-                }
-                return const DropDownWidget(scubaBoxes: []);
-              },
-              listener: (context, state) {
-                if (state is OrgansList && state.scubaBoxes.isNotEmpty) {
-                  String organId = state.scubaBoxes.first.id;
-                  BlocProvider.of<CurrentOrganBloc>(context).add(GetCurrentOrganEvent(organId));
-                }
-              },
-            ),
-            BlocBuilder<CurrentChannelBloc, ChannelControlsState>(
-              builder: (context, state) {
-                if (state is CurrentChannel) {
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Container(
+          height: MediaQuery.of(context).size.height + 70,
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: <Widget>[
+              BlocConsumer<OrgansListBloc, OrgansListState>(
+                builder: (context, state) {
+                  if (state is OrgansList) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Organs List: ${state.listType}",
+                          style: const TextStyle(fontWeight: FontWeight.w400),
+                        ),
+                        heightSizedBox(5),
+                        DropDownWidget(scubaBoxes: state.scubaBoxes),
+                      ],
+                    );
+                  }
+                  return const DropDownWidget(scubaBoxes: []);
+                },
+                listener: (context, state) {
+                  if (state is OrgansList && state.scubaBoxes.isNotEmpty) {
+                    String organId = state.scubaBoxes.first.id;
+                    BlocProvider.of<CurrentOrganBloc>(context).add(GetCurrentOrganEvent(organId));
+                  }
+                },
+              ),
+              BlocBuilder<CurrentChannelBloc, ChannelControlsState>(
+                builder: (context, state) {
+                  if (state is CurrentChannel) {
+                    return ChannelControlWidget(
+                      controller: controller,
+                      currentChannel: state.channel,
+                    );
+                  }
                   return ChannelControlWidget(
                     controller: controller,
-                    currentChannel: state.channel,
+                    currentChannel: 1,
                   );
-                }
-                return ChannelControlWidget(
-                  controller: controller,
-                  currentChannel: 1,
-                );
-              },
-            ),
-            BlocBuilder<CurrentOrganBloc, CurrentOrganState>(
-              builder: (context, state) {
-                if (state is CurrentOrgan) {
-                  return Column(
-                    children: [
-                      GraphPagerWidget(controller: controller, context: context, scubaBox: state.scubaBox),
-                      buildGraphPagerIndicator(),
-                      MachinePropertiesWidget(scubaBox: state.scubaBox)
-                    ],
-                  );
-                }
-                return const SizedBox();
-              },
-            ),
-          ],
+                },
+              ),
+              BlocBuilder<CurrentOrganBloc, CurrentOrganState>(
+                builder: (context, state) {
+                  if (state is CurrentOrgan) {
+                    return Column(
+                      children: [
+                        GraphPagerWidget(controller: controller, context: context, scubaBox: state.scubaBox),
+                        buildGraphPagerIndicator(),
+                        MachinePropertiesWidget(scubaBox: state.scubaBox)
+                      ],
+                    );
+                  }
+                  return const SizedBox();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
