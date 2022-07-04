@@ -8,10 +8,12 @@ import '../app_utils.dart';
 
 class OrganDropDown extends StatefulWidget {
   final List<ScubaBox> scubaBoxes;
-  List<String> organs = [];
+  Set<String> organs = {};
+  String dropdownValue = '';
 
   OrganDropDown({super.key, required this.scubaBoxes}) {
-    organs = scubaBoxes.map((e) => "${e.organ.name} ${e.id}").toList();
+    organs = scubaBoxes.toSet().map((e) => "${e.organ.name} ${e.id}").toSet();
+    dropdownValue = organs.first;
   }
 
   @override
@@ -19,7 +21,6 @@ class OrganDropDown extends StatefulWidget {
 }
 
 class _OrganDropDownState extends State<OrganDropDown> {
-  String dropdownValue = '';
 
   @override
   Widget build(BuildContext context) {
@@ -34,21 +35,22 @@ class _OrganDropDownState extends State<OrganDropDown> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
           child: DropdownButton<String>(
-            value: dropdownValue.isNotEmpty ? dropdownValue : widget.organs.first,
-            hint: const Text('-- Select Organ --'),
+            value: widget.dropdownValue.isNotEmpty ? widget.dropdownValue : widget.organs.first,
             isExpanded: true,
             icon: const Icon(Icons.arrow_drop_down),
             underline: const SizedBox(),
             elevation: 16,
             style: const TextStyle(color: Colors.deepPurple),
             onChanged: (String? newValue) {
-              setState(() {
-                dropdownValue = newValue!;
-              });
-              String currentScubaId = newValue!.split(" ")[1];
-              BlocProvider.of<CurrentOrganBloc>(context).add(GetCurrentOrganEvent(currentScubaId));
+              if(newValue != null){
+                setState(() {
+                  widget.dropdownValue = newValue;
+                });
+                String currentScubaId = newValue.split(" ")[1];
+                BlocProvider.of<CurrentOrganBloc>(context).add(GetCurrentOrganEvent(currentScubaId));
+              }
             },
-            items: widget.organs.map<DropdownMenuItem<String>>((String value) {
+            items: widget.organs.toSet().map<DropdownMenuItem<String>>((String value) {
               return buildDropdownMenuItem(value);
             }).toList(),
           ),
