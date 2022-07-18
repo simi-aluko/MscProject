@@ -9,6 +9,8 @@ init() async {
   sl.registerFactory(() => OrgansListBloc(scubaTxBoxUseCase: sl()));
   sl.registerFactory(() => CurrentOrganBloc(scubaTxBoxUseCase: sl()));
   sl.registerFactory(() => CurrentChannelBloc());
+  sl.registerFactory(() => SmartAuditGraphBloc());
+  sl.registerFactory(() => SmartAuditEventListBloc(scubaTxBoxUseCase: sl()));
 
   sl.registerLazySingleton(() => ScubaTxBoxUseCase(sl()));
 

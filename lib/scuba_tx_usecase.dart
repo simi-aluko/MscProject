@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:msc_project/models/organ.dart';
 import 'package:msc_project/models/scuba_box.dart';
+import 'package:msc_project/models/smart_audit_event.dart';
 import 'package:msc_project/models/time_series.dart';
 
 class ScubaTxBoxUseCase {
@@ -20,17 +21,17 @@ class ScubaTxBoxUseCase {
     channelData3 = getChannel3Data();
     defaultScubaBoxes = [
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID1", temperature: "30º", gas: "40%", battery: "80%", organ: OrganType.Liver),
+          id: "ID1", temperature: "5º", gas: "40%", battery: "80%", organ: OrganType.liver),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID2", temperature: "50º", gas: "40%", battery: "90%", organ: OrganType.Liver),
+          id: "ID2", temperature: "2º", gas: "40%", battery: "90%", organ: OrganType.liver),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID3", temperature: "40º", gas: "100%", battery: "50%", organ: OrganType.Pancreas),
+          id: "ID3", temperature: "3º", gas: "100%", battery: "50%", organ: OrganType.pancreas),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID4", temperature: "80º", gas: "40%", battery: "50%", organ: OrganType.Pancreas),
+          id: "ID4", temperature: "4º", gas: "40%", battery: "50%", organ: OrganType.pancreas),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID5", temperature: "60º", gas: "100%", battery: "10%", organ: OrganType.Heart),
+          id: "ID5", temperature: "5º", gas: "100%", battery: "10%", organ: OrganType.heart),
       ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID6", temperature: "70º", gas: "100%", battery: "30%", organ: OrganType.Heart),
+          id: "ID6", temperature: "2º", gas: "100%", battery: "30%", organ: OrganType.heart),
     ];
   }
 
@@ -66,6 +67,18 @@ class ScubaTxBoxUseCase {
 
     return ChannelData(pressure: pressure, flow: flow);
   }
+  
+  List<SmartAuditEvent> getSmartAuditEvents(){
+   List<SmartAuditEvent> events = [
+     SmartAuditEvent(event: SmartAuditEventType.leak, channelData: getChannel1Data(), channel: 1, name: leak),
+     SmartAuditEvent(event: SmartAuditEventType.blockage, channelData: getChannel2Data(), channel: 2, name: blockage),
+     SmartAuditEvent(event: SmartAuditEventType.highFlow, channelData: getChannel3Data(), channel: 3, name: highFlow),
+     SmartAuditEvent(event: SmartAuditEventType.highPressure, channelData: getChannel2Data(), channel: 2, name: highPressure),
+     SmartAuditEvent(event: SmartAuditEventType.lowPressure, channelData: getChannel1Data(), channel: 1, name: lowPressure),
+   ];
+
+   return events;
+  }
 }
 
 class ReadCSV {
@@ -78,3 +91,5 @@ class ReadCSV {
     return csvToListConverter.convert(myData);
   }
 }
+
+

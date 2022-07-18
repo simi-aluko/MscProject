@@ -18,17 +18,17 @@ class AppDrawer extends StatelessWidget {
           DrawerListTile(
             icon: imgLiver,
             title: liver,
-            organType: OrganType.Liver,
+            organType: OrganType.liver,
           ),
           DrawerListTile(
             icon: imgPancreas,
             title: pancreas,
-            organType: OrganType.Pancreas,
+            organType: OrganType.pancreas,
           ),
           DrawerListTile(
             icon: imgHeart,
             title: heart,
-            organType: OrganType.Heart,
+            organType: OrganType.heart,
           ),
           DrawerListTile(
             icon: imgAll,

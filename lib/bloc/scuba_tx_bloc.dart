@@ -1,12 +1,11 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:msc_project/app_utils.dart';
 import 'package:msc_project/models/organ.dart';
 import 'package:msc_project/models/scuba_box.dart';
-import 'package:msc_project/models/time_series.dart';
+import 'package:msc_project/models/smart_audit_event.dart';
 import 'package:msc_project/scuba_tx_usecase.dart';
 
 part 'scuba_tx_event.dart';
@@ -62,5 +61,30 @@ class CurrentChannelBloc extends Bloc<ChannelControlsEvent, ChannelControlsState
         emit(CurrentChannel(channel: state.channel + 1));
       }
     }
+  }
+}
+
+class SmartAuditGraphBloc extends Bloc<SmartAuditGraphBlocEvent, SmartAuditGraphState>{
+
+  SmartAuditGraphBloc() : super(EmptySmartAuditGraphState()){
+   on<ShowSmartAuditGraph>(_onShowSmartAuditGraph);
+  }
+
+  _onShowSmartAuditGraph(ShowSmartAuditGraph event, Emitter<SmartAuditGraphState> state) async {
+    emit(LoadedSmartAuditGraphState(smartAuditEvent: event.smartAuditEvent));
+  }
+}
+
+class SmartAuditEventListBloc extends Bloc<SmartAuditEventsBlocEvent, SmartAuditEventListState>{
+  final ScubaTxBoxUseCase scubaTxBoxUseCase;
+
+  SmartAuditEventListBloc({required this.scubaTxBoxUseCase}): super(EmptySmartAuditEventListState()){
+    on<ShowSmartAuditEventList>(_onShowSmartAuditEvents);
+  }
+
+  _onShowSmartAuditEvents(ShowSmartAuditEventList event, Emitter<SmartAuditEventListState> state){
+
+    List<SmartAuditEvent> smartAuditEvents = scubaTxBoxUseCase.getSmartAuditEvents();
+    emit(LoadedSmartAuditEventListState(smartAuditEvents: smartAuditEvents));
   }
 }

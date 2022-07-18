@@ -41,3 +41,27 @@ abstract class ChannelControlsEvent extends Equatable {
   @override
   List<Object?> get props => [];
 }
+
+// Smart Audit Event Graph
+abstract class SmartAuditGraphBlocEvent extends Equatable {
+  const SmartAuditGraphBlocEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class ShowSmartAuditGraph extends SmartAuditGraphBlocEvent{
+  final SmartAuditEvent smartAuditEvent;
+
+  const ShowSmartAuditGraph({required this.smartAuditEvent});
+}
+
+// Smart Audit Events List
+abstract class SmartAuditEventsBlocEvent extends Equatable {
+  const SmartAuditEventsBlocEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class ShowSmartAuditEventList extends SmartAuditEventsBlocEvent{}

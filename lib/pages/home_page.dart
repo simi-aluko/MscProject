@@ -11,6 +11,7 @@ import '../injection_container.dart';
 import '../models/scuba_box.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/channel_control_widget.dart';
+import '../widgets/expanded_bottom_sheet_widget.dart';
 import '../widgets/machine_properties_widget.dart';
 import '../widgets/no_scuba_boxes_widget.dart';
 import '../widgets/organ_dropdown_widget.dart';
@@ -31,15 +32,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<OrgansListBloc>(
-          create: (_) => sl<OrgansListBloc>()..add(GetAllOrgansEvent()),
-        ),
-        BlocProvider<CurrentChannelBloc>(
-          create: (_) => sl<CurrentChannelBloc>(),
-        ),
-        BlocProvider<CurrentOrganBloc>(
-          create: (_) => sl<CurrentOrganBloc>(),
-        ),
+        BlocProvider<OrgansListBloc>(create: (_) => sl<OrgansListBloc>()..add(GetAllOrgansEvent())),
+        BlocProvider<CurrentChannelBloc>(create: (_) => sl<CurrentChannelBloc>()),
+        BlocProvider<CurrentOrganBloc>(create: (_) => sl<CurrentOrganBloc>()),
+        BlocProvider<SmartAuditEventListBloc>(create: (_) => sl<SmartAuditEventListBloc>()..add(ShowSmartAuditEventList())),
+        BlocProvider<SmartAuditGraphBloc>(create: (_) => sl<SmartAuditGraphBloc>())
       ],
       child: Scaffold(
         appBar: appBar(widget.title),
@@ -52,41 +49,11 @@ class _HomePageState extends State<HomePage> {
   buildBody(BuildContext context) {
     return SlidingUpPanel(
       minHeight: 70,
-      maxHeight: MediaQuery.of(context).size.height / 2,
+      maxHeight: MediaQuery.of(context).size.height / 1.2,
       borderRadius: radius,
-      panel: Column(
-        children: [
-          heightSizedBox(10),
-          const Image(
-            image: AssetImage(imgDownDirection),
-            color: Colors.black,
-            height: 20,
-          ),
-          Expanded(
-            child: Center(
-              child: Container(
-                  decoration: BoxDecoration(color: Colors.white),
-                  child: const Text("Smart Audit Event logs would show here.")),
-            ),
-          ),
-        ],
-      ),
-      collapsed: Container(
-        decoration: BoxDecoration(color: const Color(primaryColor), borderRadius: radius),
-        child: Column(
-          children: [
-            heightSizedBox(10),
-            const Image(
-              image: AssetImage(imgUpDirection),
-              color: Colors.white,
-              height: 20,
-            ),
-            heightSizedBox(5),
-            const Text("Swipe up to view Smart Audit event logs", style: TextStyle(color: Colors.white)),
-            heightSizedBox(10),
-          ],
-        ),
-      ),
+      backdropEnabled: true,
+      panelBuilder: (ScrollController sc) => buildExpandedBottomSheet(sc),
+      collapsed: buildCollapsedSlideUpPanel(),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Container(
@@ -94,61 +61,88 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: <Widget>[
-              BlocConsumer<OrgansListBloc, OrgansListState>(
-                builder: (context, state) {
-                  if (state is OrgansList) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Organs List: ${state.listType}",
-                          style: const TextStyle(fontWeight: FontWeight.w400),
-                        ),
-                        heightSizedBox(5),
-                        DropDownWidget(scubaBoxes: state.scubaBoxes),
-                      ],
-                    );
-                  }
-                  return const DropDownWidget(scubaBoxes: []);
-                },
-                listener: (context, state) {
-                  if (state is OrgansList && state.scubaBoxes.isNotEmpty) {
-                    String organId = state.scubaBoxes.first.id;
-                    BlocProvider.of<CurrentOrganBloc>(context).add(GetCurrentOrganEvent(organId));
-                  }
-                },
-              ),
-              BlocBuilder<CurrentChannelBloc, ChannelControlsState>(
-                builder: (context, state) {
-                  if (state is CurrentChannel) {
-                    return ChannelControlWidget(
-                      controller: controller,
-                      currentChannel: state.channel,
-                    );
-                  }
-                  return ChannelControlWidget(
-                    controller: controller,
-                    currentChannel: 1,
-                  );
-                },
-              ),
-              BlocBuilder<CurrentOrganBloc, CurrentOrganState>(
-                builder: (context, state) {
-                  if (state is CurrentOrgan) {
-                    return Column(
-                      children: [
-                        GraphPagerWidget(controller: controller, context: context, scubaBox: state.scubaBox),
-                        buildGraphPagerIndicator(),
-                        MachinePropertiesWidget(scubaBox: state.scubaBox)
-                      ],
-                    );
-                  }
-                  return const SizedBox();
-                },
-              ),
+              OrganSelectionBlocConsumer(),
+              ChannelControlsBlocBuilder(),
+              GraphAndMachinePropertiesBlocBuilder(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  BlocConsumer<OrgansListBloc, OrgansListState> OrganSelectionBlocConsumer() {
+    return BlocConsumer<OrgansListBloc, OrgansListState>(
+      builder: (context, state) {
+        if (state is OrgansList) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Organs List: ${state.listType}",
+                  style: const TextStyle(fontWeight: FontWeight.w400),
+                ),
+                heightSizedBox(5),
+                DropDownWidget(scubaBoxes: state.scubaBoxes),
+              ],
+            );
+        }
+        return const DropDownWidget(scubaBoxes: []);
+        },
+      listener: (context, state) {
+        if (state is OrgansList && state.scubaBoxes.isNotEmpty) {
+          String organId = state.scubaBoxes.first.id;
+          BlocProvider.of<CurrentOrganBloc>(context).add(GetCurrentOrganEvent(organId));
+        }
+      },
+    );
+  }
+
+  BlocBuilder<CurrentChannelBloc, ChannelControlsState> ChannelControlsBlocBuilder() {
+    return BlocBuilder<CurrentChannelBloc, ChannelControlsState>(
+              builder: (context, state) {
+                if (state is CurrentChannel) {
+                  return ChannelControlWidget(
+                    controller: controller,
+                    currentChannel: state.channel,
+                  );
+                }
+                return ChannelControlWidget(
+                  controller: controller,
+                  currentChannel: 1,
+                );
+              },
+            );
+  }
+
+  BlocBuilder<CurrentOrganBloc, CurrentOrganState> GraphAndMachinePropertiesBlocBuilder() {
+    return BlocBuilder<CurrentOrganBloc, CurrentOrganState>(
+              builder: (context, state) {
+                if (state is CurrentOrgan) {
+                  return Column(
+                    children: [
+                      GraphPagerWidget(controller: controller, context: context, scubaBox: state.scubaBox),
+                      buildGraphPagerIndicator(),
+                      MachinePropertiesWidget(scubaBox: state.scubaBox)
+                    ],
+                  );
+                }
+                return const SizedBox();
+              },
+            );
+  }
+
+  Container buildCollapsedSlideUpPanel() {
+    return Container(
+      decoration: BoxDecoration(color: const Color(primaryColor), borderRadius: radius),
+      child: Column(
+        children: [
+          heightSizedBox(10),
+          const Image(image: AssetImage(imgUpDirection), color: Colors.white, height: 20),
+          heightSizedBox(5),
+          const Text("Swipe up to view Smart Audit event logs", style: TextStyle(color: Colors.white)),
+          heightSizedBox(10),
+        ],
       ),
     );
   }
@@ -161,10 +155,23 @@ class _HomePageState extends State<HomePage> {
       child: SmoothPageIndicator(
         controller: controller,
         count: 3,
-        effect: ScrollingDotsEffect(dotHeight: 8, dotWidth: 8, dotColor: Colors.grey, activeDotColor: Colors.accents[1]
-            // strokeWidth: 5,
-            ),
+        effect: ScrollingDotsEffect(dotHeight: 8, dotWidth: 8, dotColor: Colors.grey, activeDotColor: Colors.accents[1]),
       ),
     );
   }
+
+  Column buildExpandedBottomSheet(ScrollController scrollController) {
+    return Column(
+      children: [
+        heightSizedBox(10),
+        const Image(image: AssetImage(imgDownDirection), color: Colors.black, height: 20),
+        Expanded(
+          child: ExpandedBottomSheetWidget(sc: scrollController),
+        ),
+      ],
+    );
+  }
 }
+
+
+
