@@ -47,9 +47,9 @@ class ScubaTxBoxUseCase {
     return defaultScubaBoxes.where((element) => element.id == id).toList()[0];
   }
 
-  ChannelData getChannel1Data() => _getChannelData(pressureCol: 6, flowCol: 7);
-  ChannelData getChannel2Data() => _getChannelData(pressureCol: 13, flowCol: 14);
-  ChannelData getChannel3Data() => _getChannelData(pressureCol: 20, flowCol: 21);
+  ChannelData getChannel1Data() => _getChannelData(pressureCol: 7, flowCol: 6);
+  ChannelData getChannel2Data() => _getChannelData(pressureCol: 14, flowCol: 13);
+  ChannelData getChannel3Data() => _getChannelData(pressureCol: 21, flowCol: 20);
 
   ChannelData _getChannelData({required int pressureCol, required int flowCol}) {
     List<TimeSeries> pressure = <TimeSeries>[];

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:msc_project/app_utils.dart';
-import 'package:msc_project/widgets/graph_widget.dart';
+import 'package:msc_project/widgets/continous_graph_widget.dart';
 import 'package:msc_project/widgets/loading_widget.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';

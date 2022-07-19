@@ -11,10 +11,11 @@ class GraphWidget extends StatefulWidget {
   List<TimeSeries> pressureGraphData = <TimeSeries>[];
   List<TimeSeries> flowGraphData = <TimeSeries>[];
   final int channel;
+  bool isContinuous;
 
-  GraphWidget({super.key, required this.pressureData, required this.flowData, required this.channel}) {
-    pressureGraphData = pressureData.take(20).toList();
-    flowGraphData = flowData.take(20).toList();
+  GraphWidget({super.key, required this.pressureData, required this.flowData, required this.channel, this.isContinuous = true}) {
+    pressureGraphData = isContinuous ? pressureData.take(20).toList(): pressureData;
+    flowGraphData = isContinuous ? flowData.take(20).toList(): flowData;
   }
 
   @override
@@ -43,26 +44,36 @@ class _GraphWidgetState extends State<GraphWidget> with AutomaticKeepAliveClient
         legend: Legend(isVisible: true, position: LegendPosition.top),
         zoomPanBehavior: buildZoomPanBehavior(),
         primaryXAxis: buildDateTimeAxis(),
-        primaryYAxis: buildNumericAxis(),
+        primaryYAxis: buildPressureNumericAxis(),
+        axes: <ChartAxis>[
+          buildFlowNumericAxis()
+        ],
         series: <ChartSeries<TimeSeries, DateTime>>[
-          LineSeries<TimeSeries, DateTime>(
-              dataSource: widget.flowGraphData,
-              xValueMapper: (TimeSeries sales, _) => sales.time,
-              yValueMapper: (TimeSeries sales, _) => sales.parameter,
-              name: 'Flow',
-              onRendererCreated: (ChartSeriesController controller) {
-                flowSeriesController = controller;
-              },
-              animationDuration: 1000),
-          LineSeries<TimeSeries, DateTime>(
+          FastLineSeries<TimeSeries, DateTime>(
               dataSource: widget.pressureGraphData,
               xValueMapper: (TimeSeries sales, _) => sales.time,
               yValueMapper: (TimeSeries sales, _) => sales.parameter,
               name: 'Pressure',
               onRendererCreated: (ChartSeriesController controller) {
-                pressureSeriesController = controller;
+                if(widget.isContinuous){
+                  pressureSeriesController = controller;
+                }
               },
-              animationDuration: 1000),
+              animationDuration: 1000,
+              yAxisName: "yAxisPressure"),
+          FastLineSeries<TimeSeries, DateTime>(
+              dataSource: widget.flowGraphData,
+              xValueMapper: (TimeSeries sales, _) => sales.time,
+              yValueMapper: (TimeSeries sales, _) => sales.parameter,
+              name: 'Flow',
+              onRendererCreated: (ChartSeriesController controller) {
+                if(widget.isContinuous){
+                  flowSeriesController = controller;
+                }
+              },
+              animationDuration: 1000,
+              yAxisName: "yAxisFlow"),
+
         ]);
   }
 
@@ -70,24 +81,39 @@ class _GraphWidgetState extends State<GraphWidget> with AutomaticKeepAliveClient
     return ZoomPanBehavior(enablePinching: true, enablePanning: true, enableSelectionZooming: true);
   }
 
-  NumericAxis buildNumericAxis() {
+  NumericAxis buildPressureNumericAxis() {
     return NumericAxis(
+        name: "yAxisPressure",
         decimalPlaces: 1,
+        anchorRangeToVisiblePoints: false,
         title: AxisTitle(
-            text: "Flow and Pressure",
+            text: "Pressure",
             textStyle:
                 const TextStyle(color: Colors.black, fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 12)));
+  }
+
+  NumericAxis buildFlowNumericAxis() {
+    return NumericAxis(
+        name: "yAxisFlow",
+        decimalPlaces: 1,
+        opposedPosition: true,
+        anchorRangeToVisiblePoints: false,
+        title: AxisTitle(
+            text: "Flow",
+            textStyle:
+            const TextStyle(color: Colors.black, fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 12)));
   }
 
   DateTimeAxis buildDateTimeAxis() {
     return DateTimeAxis(
         title: AxisTitle(
             text: "Time (Hour:min:sec)",
-            textStyle:
-                const TextStyle(color: Colors.black, fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 12)),
+            textStyle: const TextStyle(color: Colors.black, fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 12)),
         majorGridLines: const MajorGridLines(width: 0),
         edgeLabelPlacement: EdgeLabelPlacement.shift,
         intervalType: DateTimeIntervalType.seconds,
+        visibleMinimum: widget.isContinuous ? null : widget.flowGraphData[20].time,
+        visibleMaximum: widget.isContinuous ? null : widget.flowGraphData[widget.flowGraphData.length-1].time,
         axisLabelFormatter: (AxisLabelRenderDetails args) {
           late String text;
           text =

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:msc_project/widgets/graph_widget.dart';
+import 'package:msc_project/widgets/continous_graph_widget.dart';
 import '../app_utils.dart';
 import '../bloc/scuba_tx_bloc.dart';
 import '../models/smart_audit_event.dart';
@@ -45,7 +45,7 @@ class _ExpandedBottomSheetWidgetState extends State<ExpandedBottomSheetWidget> {
           final flowData = state.smartAuditEvent.channelData.flow;
           final channel = state.smartAuditEvent.channel;
           graphTitle = "${state.smartAuditEvent.name} on Channel $channel";
-          return GraphWidget(pressureData: pressureData, flowData: flowData, channel: channel);
+          return GraphWidget(pressureData: pressureData, flowData: flowData, channel: channel, isContinuous:false);
         }
         return const Center(
             child: Text("Smart Audit event graph would show here. Select an event."));
