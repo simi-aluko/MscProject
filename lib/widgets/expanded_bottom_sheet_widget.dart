@@ -27,11 +27,10 @@ class _ExpandedBottomSheetWidgetState extends State<ExpandedBottomSheetWidget> {
         children: [
           Text(graphTitle, style: bottomSheetTitleStyle()),
           buildSmartAuditGraph(),
-          heightSizedBox(15),
           Align(
               alignment: Alignment.centerLeft,
               child: Text("Smart Audit Events", style: bottomSheetTitleStyle(), textAlign: TextAlign.start,)),
-          heightSizedBox(10),
+          heightSizedBox(5),
           buildSmartAuditEventList(),
         ],
       ),
