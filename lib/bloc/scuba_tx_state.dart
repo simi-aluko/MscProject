@@ -54,17 +54,21 @@ class CurrentChannel extends ChannelControlsState {
 
 // SmartAuditEventGraph
 abstract class SmartAuditGraphState extends Equatable {
-  const SmartAuditGraphState();
 
+  const SmartAuditGraphState();
+}
+
+class EmptySmartAuditGraphState extends SmartAuditGraphState{
   @override
   List<Object?> get props => [];
 }
 
-class EmptySmartAuditGraphState extends SmartAuditGraphState{}
 class LoadedSmartAuditGraphState extends SmartAuditGraphState{
   final SmartAuditEvent smartAuditEvent;
-
   const LoadedSmartAuditGraphState({required this.smartAuditEvent});
+
+  @override
+  List<Object?> get props => [smartAuditEvent];
 }
 
 // SmartAuditEventsList

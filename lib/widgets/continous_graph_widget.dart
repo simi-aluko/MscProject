@@ -49,7 +49,7 @@ class _GraphWidgetState extends State<GraphWidget> with AutomaticKeepAliveClient
           buildFlowNumericAxis()
         ],
         series: <ChartSeries<TimeSeries, DateTime>>[
-          FastLineSeries<TimeSeries, DateTime>(
+          LineSeries<TimeSeries, DateTime>(
               dataSource: widget.pressureGraphData,
               xValueMapper: (TimeSeries sales, _) => sales.time,
               yValueMapper: (TimeSeries sales, _) => sales.parameter,
@@ -61,7 +61,7 @@ class _GraphWidgetState extends State<GraphWidget> with AutomaticKeepAliveClient
               },
               animationDuration: 1000,
               yAxisName: "yAxisPressure"),
-          FastLineSeries<TimeSeries, DateTime>(
+          LineSeries<TimeSeries, DateTime>(
               dataSource: widget.flowGraphData,
               xValueMapper: (TimeSeries sales, _) => sales.time,
               yValueMapper: (TimeSeries sales, _) => sales.parameter,
@@ -148,7 +148,7 @@ class _GraphWidgetState extends State<GraphWidget> with AutomaticKeepAliveClient
   void initState() {
     super.initState();
     WidgetsBinding.instance
-        .addPostFrameCallback((_) => {timer = Timer.periodic(const Duration(milliseconds: 500), _updateDataSource)});
+        .addPostFrameCallback((_) => {timer = Timer.periodic(const Duration(milliseconds: 1000), _updateDataSource)});
   }
 }
 
@@ -166,7 +166,6 @@ class GraphPagerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Graph changes");
     return SizedBox(
       height: MediaQuery.of(context).size.height / 2,
       child: PageView(

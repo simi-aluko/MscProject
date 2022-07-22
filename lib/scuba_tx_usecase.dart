@@ -54,16 +54,22 @@ class ScubaTxBoxUseCase {
   ChannelData _getChannelData({required int pressureCol, required int flowCol}) {
     List<TimeSeries> pressure = <TimeSeries>[];
     List<TimeSeries> flow = <TimeSeries>[];
+    Set<String> dateTimeSet = {};
 
     for (int i = 0; i < csvAsList.length; i++) {
       if (i == 0) continue;
 
       String dateString = csvAsList[i][1];
+      bool isAdded = dateTimeSet.add(dateString);
       DateTime dateTime = DateFormat('dd/MM/yyyy H:m:s').parse(dateString);
 
-      flow.add(TimeSeries(time: dateTime, parameter: csvAsList[i][flowCol]));
-      pressure.add(TimeSeries(time: dateTime, parameter: csvAsList[i][pressureCol]));
+      if(isAdded){
+        flow.add(TimeSeries(time: dateTime, parameter: csvAsList[i][flowCol]));
+        pressure.add(TimeSeries(time: dateTime, parameter: csvAsList[i][pressureCol]));
+      }
     }
+
+    print("Flow Size : ${flow.length}, Pressure Size: ${pressure.length}");
 
     return ChannelData(pressure: pressure, flow: flow);
   }

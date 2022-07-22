@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:msc_project/models/time_series.dart';
 import 'package:msc_project/widgets/continous_graph_widget.dart';
+import 'package:msc_project/widgets/scrolling_graph_widget.dart';
 import '../app_utils.dart';
 import '../bloc/scuba_tx_bloc.dart';
 import '../models/smart_audit_event.dart';
@@ -41,11 +43,32 @@ class _ExpandedBottomSheetWidgetState extends State<ExpandedBottomSheetWidget> {
   BlocBuilder<SmartAuditGraphBloc, SmartAuditGraphState> buildSmartAuditGraph() {
     return BlocBuilder<SmartAuditGraphBloc, SmartAuditGraphState>(builder: (context, state) {
         if (state is LoadedSmartAuditGraphState) {
-          final pressureData = state.smartAuditEvent.channelData.pressure;
-          final flowData = state.smartAuditEvent.channelData.flow;
+          List<TimeSeries>? pressureData = state.smartAuditEvent.channelData.pressure;
+          List<TimeSeries>? flowData = state.smartAuditEvent.channelData.flow;
           final channel = state.smartAuditEvent.channel;
+          final type = state.smartAuditEvent.event;
           graphTitle = "${state.smartAuditEvent.name} on Channel $channel";
-          return GraphWidget(pressureData: pressureData, flowData: flowData, channel: channel, isContinuous:false);
+
+          switch(type){
+            case SmartAuditEventType.leak:
+              break;
+            case SmartAuditEventType.blockage:
+              break;
+            case SmartAuditEventType.highPressure:
+              flowData = null;
+              break;
+            case SmartAuditEventType.lowPressure:
+              flowData = null;
+              break;
+            case SmartAuditEventType.highFlow:
+              pressureData = null;
+              break;
+            case SmartAuditEventType.lowFlow:
+              pressureData = null;
+              break;
+          }
+
+          return ScrollingGraphWidget(pressureData: pressureData, flowData: flowData, smartAuditEventType: type);
         }
         return const Center(
             child: Text("Smart Audit event graph would show here. Select an event."));
@@ -76,6 +99,11 @@ class _ExpandedBottomSheetWidgetState extends State<ExpandedBottomSheetWidget> {
                             selectedSmartAuditEventIndex = position;
                             final currentSmartAuditEvent = state.smartAuditEvents[position];
                             graphTitle = "${currentSmartAuditEvent.name} on Channel ${currentSmartAuditEvent.channel}";
+                            List<SmartAuditEvent> smartAuditEvents = state.smartAuditEvents;
+                            final newSAEvent = smartAuditEvents[selectedSmartAuditEventIndex];
+
+                            BlocProvider.of<SmartAuditGraphBloc>(context)
+                                .add(ShowSmartAuditGraph(smartAuditEvent: newSAEvent));
                           });
                         },
                         child: buildSmartAuditEventRow(state.smartAuditEvents[position], position));
