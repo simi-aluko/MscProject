@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:msc_project/models/time_series.dart';
+
+import 'time_series.dart';
 
 class SmartAuditEvent extends Equatable{
 
@@ -19,9 +20,3 @@ enum SmartAuditEventType {
   leak, blockage, highPressure, lowPressure, highFlow, lowFlow
 }
 
-const leak = "Leak";
-const blockage = "Blockage";
-const highPressure = "High Pressure";
-const lowPressure = "Low Pressure";
-const highFlow = "High Flow";
-const lowFlow = "Low Flow";

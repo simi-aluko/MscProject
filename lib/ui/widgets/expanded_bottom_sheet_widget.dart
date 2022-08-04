@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:msc_project/models/time_series.dart';
-import 'package:msc_project/widgets/continous_graph_widget.dart';
-import 'package:msc_project/widgets/scrolling_graph_widget.dart';
-import '../app_utils.dart';
+import 'package:msc_project/ui/widgets/scrolling_graph_widget.dart';
+import 'package:msc_project/ui/widgets/util_widgets.dart';
+import '../../core/colors.dart';
+import '../../data/models/smart_audit_event.dart';
+import '../../data/models/time_series.dart';
 import '../bloc/scuba_tx_bloc.dart';
-import '../models/smart_audit_event.dart';
 
 class ExpandedBottomSheetWidget extends StatefulWidget {
   final ScrollController sc;

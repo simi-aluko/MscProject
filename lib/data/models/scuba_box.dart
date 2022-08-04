@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:msc_project/models/time_series.dart';
 
+import 'time_series.dart';
 import 'organ.dart';
 
 class ScubaBox extends Equatable {

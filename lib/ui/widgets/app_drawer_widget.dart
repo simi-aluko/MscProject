@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:msc_project/app_utils.dart';
-import 'package:msc_project/bloc/scuba_tx_bloc.dart';
-import 'package:msc_project/models/organ.dart';
 
-class AppDrawer extends StatelessWidget {
-  const AppDrawer({
+import '../../core/colors.dart';
+import '../../core/images.dart';
+import '../../core/strings.dart';
+import '../../data/models/organ.dart';
+import '../bloc/scuba_tx_bloc.dart';
+
+class AppDrawerWidget extends StatelessWidget {
+  const AppDrawerWidget({
     Key? key,
   }) : super(key: key);
 
@@ -14,30 +17,30 @@ class AppDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: [
-          DrawerHeader(),
+          const DrawerHeader(),
           DrawerListTile(
             icon: imgLiver,
-            title: liver,
+            title: stringLiver,
             organType: OrganType.liver,
           ),
           DrawerListTile(
             icon: imgPancreas,
-            title: pancreas,
+            title: stringPancreas,
             organType: OrganType.pancreas,
           ),
           DrawerListTile(
             icon: imgHeart,
-            title: heart,
+            title: stringHeart,
             organType: OrganType.heart,
           ),
           DrawerListTile(
             icon: imgAll,
-            title: allOrgans,
+            title: stringAllOrgans,
           ),
           Divider(),
           DrawerListTile(
             icon: imgBox,
-            title: addScubaBox,
+            title: stringAddScubaBox,
           ),
         ],
       ),
@@ -93,7 +96,7 @@ class DrawerListTile extends StatelessWidget {
       onTap: () {
         if (organType != null) {
           BlocProvider.of<OrgansListBloc>(context).add(GetOrgansByTypeEvent(organType!));
-        } else if (title == allOrgans) {
+        } else if (title == stringAllOrgans) {
           BlocProvider.of<OrgansListBloc>(context).add(GetAllOrgansEvent());
         }
       },

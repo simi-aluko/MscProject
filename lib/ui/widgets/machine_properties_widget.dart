@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:msc_project/ui/widgets/util_widgets.dart';
 
-import '../app_utils.dart';
-import '../models/scuba_box.dart';
+import '../../core/colors.dart';
+import '../../data/models/scuba_box.dart';
 
 class MachinePropertiesWidget extends StatelessWidget {
   final ScubaBox scubaBox;

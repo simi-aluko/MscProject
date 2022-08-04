@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:msc_project/app_utils.dart';
-import 'injection_container.dart' as di;
-import 'pages/home_page.dart';
+import 'core/di.dart' as di;
+import 'core/styles.dart';
+import 'ui/screens/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,46 +1,47 @@
-import 'dart:async';
+
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:msc_project/app_utils.dart';
-import 'package:msc_project/models/organ.dart';
-import 'package:msc_project/models/scuba_box.dart';
-import 'package:msc_project/models/smart_audit_event.dart';
-import 'package:msc_project/scuba_tx_usecase.dart';
+import 'package:msc_project/domain/scuba_repository.dart';
+
+import '../../core/strings.dart';
+import '../../data/models/organ.dart';
+import '../../data/models/scuba_box.dart';
+import '../../data/models/smart_audit_event.dart';
 
 part 'scuba_tx_event.dart';
 part 'scuba_tx_state.dart';
 
 class OrgansListBloc extends Bloc<OrgansListEvent, OrgansListState> {
-  final ScubaTxBoxUseCase scubaTxBoxUseCase;
+  final ScubaRepository scubaRepository;
 
   OrgansListBloc({
-    required this.scubaTxBoxUseCase,
+    required this.scubaRepository,
   }) : super(EmptyOrgansList()) {
     on<OrgansListEvent>(organsListEmitter);
   }
 
   organsListEmitter(OrgansListEvent event, Emitter<OrgansListState> emitter) async {
     if (event is GetAllOrgansEvent) {
-      List<ScubaBox> scubaBoxes = scubaTxBoxUseCase.getAllScubaBoxes();
-      emit(OrgansList(scubaBoxes: scubaBoxes, listType: allOrgans));
+      List<ScubaBox> scubaBoxes = scubaRepository.getAllScubaBoxes();
+      emit(OrgansList(scubaBoxes: scubaBoxes, listType: stringAllOrgans));
     } else if (event is GetOrgansByTypeEvent) {
-      List<ScubaBox> scubaBoxes = scubaTxBoxUseCase.getScubaBoxByOrgan(event.organType);
+      List<ScubaBox> scubaBoxes = scubaRepository.getScubaBoxByOrgan(event.organType);
       emit(OrgansList(scubaBoxes: scubaBoxes, listType: event.organType.name));
     }
   }
 }
 
 class CurrentOrganBloc extends Bloc<CurrentOrganEvent, CurrentOrganState> {
-  final ScubaTxBoxUseCase scubaTxBoxUseCase;
+  final ScubaRepository scubaRepository;
 
-  CurrentOrganBloc({required this.scubaTxBoxUseCase}) : super(EmptyCurrentOrgan()) {
+  CurrentOrganBloc({required this.scubaRepository}) : super(EmptyCurrentOrgan()) {
     on<CurrentOrganEvent>(currentOrganEmitter);
   }
 
   currentOrganEmitter(CurrentOrganEvent event, Emitter<CurrentOrganState> emitter) async {
     if (event is GetCurrentOrganEvent) {
-      ScubaBox scubaBox = scubaTxBoxUseCase.getScubaBoxById(event.organId);
+      ScubaBox scubaBox = scubaRepository.getScubaBoxById(event.organId);
       emit(CurrentOrgan(scubaBox: scubaBox));
     }
   }
@@ -76,15 +77,15 @@ class SmartAuditGraphBloc extends Bloc<SmartAuditGraphBlocEvent, SmartAuditGraph
 }
 
 class SmartAuditEventListBloc extends Bloc<SmartAuditEventsBlocEvent, SmartAuditEventListState>{
-  final ScubaTxBoxUseCase scubaTxBoxUseCase;
+  final ScubaRepository scubaRepository;
 
-  SmartAuditEventListBloc({required this.scubaTxBoxUseCase}): super(EmptySmartAuditEventListState()){
+  SmartAuditEventListBloc({required this.scubaRepository}): super(EmptySmartAuditEventListState()){
     on<ShowSmartAuditEventList>(_onShowSmartAuditEvents);
   }
 
   _onShowSmartAuditEvents(ShowSmartAuditEventList event, Emitter<SmartAuditEventListState> state){
 
-    List<SmartAuditEvent> smartAuditEvents = scubaTxBoxUseCase.getSmartAuditEvents();
+    List<SmartAuditEvent> smartAuditEvents = scubaRepository.getSmartAuditEvents();
     emit(LoadedSmartAuditEventListState(smartAuditEvents: smartAuditEvents));
   }
 }

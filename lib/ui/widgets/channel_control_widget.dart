@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:msc_project/bloc/scuba_tx_bloc.dart';
+
+import '../bloc/scuba_tx_bloc.dart';
 
 class ChannelControlWidget extends StatefulWidget {
   const ChannelControlWidget({Key? key, required this.controller, required this.currentChannel}) : super(key: key);

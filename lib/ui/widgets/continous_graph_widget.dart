@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import '../models/scuba_box.dart';
-import '../models/time_series.dart';
+import '../../data/models/scuba_box.dart';
+import '../../data/models/time_series.dart';
 
 class GraphWidget extends StatefulWidget {
   final List<TimeSeries> pressureData;

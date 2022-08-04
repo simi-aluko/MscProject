@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:msc_project/bloc/scuba_tx_bloc.dart';
-import 'package:msc_project/models/scuba_box.dart';
-import 'package:msc_project/pages/home_page.dart';
-
-import '../app_utils.dart';
+import '../../core/images.dart';
+import '../../data/models/scuba_box.dart';
+import '../bloc/scuba_tx_bloc.dart';
 
 class OrganDropDown extends StatefulWidget {
   final List<ScubaBox> scubaBoxes;

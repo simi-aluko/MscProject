@@ -1,12 +1,9 @@
 import 'dart:core';
-import 'dart:core';
-import 'dart:core';
-
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import '../models/smart_audit_event.dart';
-import '../models/time_series.dart';
+import '../../data/models/smart_audit_event.dart';
+import '../../data/models/time_series.dart';
 
 class ScrollingGraphWidget extends StatelessWidget {
   List<TimeSeries> pressureData = [];

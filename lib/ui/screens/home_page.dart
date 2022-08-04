@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:msc_project/app_utils.dart';
-import 'package:msc_project/widgets/continous_graph_widget.dart';
-import 'package:msc_project/widgets/loading_widget.dart';
+import 'package:msc_project/ui/widgets/util_widgets.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../../core/colors.dart';
+import '../../core/di.dart';
+import '../../core/images.dart';
+import '../../core/styles.dart';
 import '../bloc/scuba_tx_bloc.dart';
-import '../injection_container.dart';
-import '../models/scuba_box.dart';
-import '../widgets/app_drawer.dart';
+import '../widgets/app_drawer_widget.dart';
 import '../widgets/channel_control_widget.dart';
+import '../widgets/continous_graph_widget.dart';
 import '../widgets/expanded_bottom_sheet_widget.dart';
 import '../widgets/machine_properties_widget.dart';
-import '../widgets/no_scuba_boxes_widget.dart';
 import '../widgets/organ_dropdown_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: appBar(widget.title),
         body: buildBody(context),
-        drawer: const AppDrawer(),
+        drawer: const AppDrawerWidget(),
       ),
     );
   }
