@@ -21,7 +21,6 @@ init() async {
   sl.registerLazySingleton(() => const CsvToListConverter());
 
   final myData = await rootBundle.loadString('assets/files/test_data.csv');
-  final csvAsList = sl<CsvToListConverter>().convert(myData);
+  final csvAsList = sl<CsvToListConverter>().convert(myData, eol: "\n");
   sl.registerLazySingleton(() => csvAsList);
-
 }
