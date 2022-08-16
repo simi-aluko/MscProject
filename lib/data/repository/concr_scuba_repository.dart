@@ -31,5 +31,4 @@ class ScubaRepositoryImpl extends ScubaRepository{
 
   @override
   List<SmartAuditEvent> getSmartAuditEvents() => scubaDataSource.getSmartAuditEvents();
-
 }

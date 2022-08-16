@@ -119,6 +119,19 @@ class _ExpandedBottomSheetWidgetState extends State<ExpandedBottomSheetWidget> {
     String startTime = "${startDateTime.hour}:${startDateTime.minute}:${startDateTime.second}";
     String eventType = smartAuditEvent.name;
     int channel = smartAuditEvent.channel;
+    MaterialAccentColor eventSeverityColor = Colors.greenAccent;
+
+    switch(smartAuditEvent.severity){
+      case SmartAuditEventSeverity.high:
+        eventSeverityColor = Colors.redAccent;
+        break;
+      case SmartAuditEventSeverity.medium:
+        eventSeverityColor = Colors.amberAccent;
+        break;
+      case SmartAuditEventSeverity.low:
+        eventSeverityColor = Colors.greenAccent;
+        break;
+    }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -129,10 +142,16 @@ class _ExpandedBottomSheetWidgetState extends State<ExpandedBottomSheetWidget> {
         borderRadius: BorderRadius.circular(10),
         color: const Color(lightGrey)
       ),
-      child: Text("$eventType on Channel $channel at $startTime",
-        style: selectedSmartAuditEventIndex == position
-            ? const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)
-            : const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+      child: Row(
+        children: [
+          Text("$eventType on Channel $channel at $startTime",
+            style: selectedSmartAuditEventIndex == position
+                ? const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)
+                : const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+          const Spacer(),
+          Icon(Icons.circle, size: 18, color: eventSeverityColor)
+        ],
+      ),
     );
   }
 }

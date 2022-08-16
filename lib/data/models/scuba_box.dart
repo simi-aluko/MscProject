@@ -13,19 +13,13 @@ class ScubaBox extends Equatable {
   final ChannelData channel2;
   final ChannelData channel3;
 
-  const ScubaBox(
-    this.channel1,
-    this.channel2,
-    this.channel3, {
-    required this.id,
-    required this.temperature,
-    required this.gas,
-    required this.battery,
-    required this.organ,
+  const ScubaBox(this.channel1, this.channel2, this.channel3, {required this.id,
+    required this.temperature, required this.gas, required this.battery, required this.organ,
   });
 
   @override
-  List<Object?> get props => [id, temperature, gas, temperature, battery, organ, channel1, channel2, channel3];
+  List<Object?> get props => [id, temperature, gas, temperature, battery,
+    organ, channel1, channel2, channel3];
 }
 
 class TempScubaBox extends Equatable {

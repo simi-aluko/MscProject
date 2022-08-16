@@ -94,6 +94,7 @@ class DrawerListTile extends StatelessWidget {
       ),
       minLeadingWidth: 10,
       onTap: () {
+        Navigator.of(context).pop();
         if (organType != null) {
           BlocProvider.of<OrgansListBloc>(context).add(GetOrgansByTypeEvent(organType!));
         } else if (title == stringAllOrgans) {

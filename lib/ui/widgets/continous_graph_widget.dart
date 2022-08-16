@@ -87,7 +87,7 @@ class _GraphWidgetState extends State<GraphWidget> with AutomaticKeepAliveClient
         decimalPlaces: 1,
         anchorRangeToVisiblePoints: false,
         title: AxisTitle(
-            text: "Pressure",
+            text: "Pressure (mmHg/min)",
             textStyle:
                 const TextStyle(color: Colors.black, fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 12)));
   }
@@ -99,7 +99,7 @@ class _GraphWidgetState extends State<GraphWidget> with AutomaticKeepAliveClient
         opposedPosition: true,
         anchorRangeToVisiblePoints: false,
         title: AxisTitle(
-            text: "Flow",
+            text: "Flow (mL/min)",
             textStyle:
             const TextStyle(color: Colors.black, fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 12)));
   }

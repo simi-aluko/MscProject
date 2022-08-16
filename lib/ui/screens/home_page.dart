@@ -5,7 +5,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../core/colors.dart';
-import '../../core/di.dart';
+import '../../core/sl.dart';
 import '../../core/images.dart';
 import '../../core/styles.dart';
 import '../bloc/scuba_tx_bloc.dart';
@@ -19,7 +19,7 @@ import '../widgets/organ_dropdown_widget.dart';
 class HomePage extends StatefulWidget {
   final String title;
 
-  HomePage({super.key, required this.title});
+  const HomePage({super.key, required this.title});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -38,10 +38,7 @@ class _HomePageState extends State<HomePage> {
         BlocProvider<SmartAuditEventListBloc>(create: (_) => sl<SmartAuditEventListBloc>()..add(ShowSmartAuditEventList())),
         BlocProvider<SmartAuditGraphBloc>(create: (_) => sl<SmartAuditGraphBloc>())
       ],
-      child: Scaffold(
-        appBar: appBar(widget.title),
-        body: buildBody(context),
-        drawer: const AppDrawerWidget(),
+      child: Scaffold(appBar: appBar(widget.title), body: buildBody(context), drawer: const AppDrawerWidget(),
       ),
     );
   }
@@ -61,9 +58,9 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: <Widget>[
-              OrganSelectionBlocConsumer(),
-              ChannelControlsBlocBuilder(),
-              GraphAndMachinePropertiesBlocBuilder(),
+              organSelectionBlocConsumer(),
+              channelControlsBlocBuilder(),
+              graphAndMachinePropertiesBlocBuilder(),
             ],
           ),
         ),
@@ -71,7 +68,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  BlocConsumer<OrgansListBloc, OrgansListState> OrganSelectionBlocConsumer() {
+  BlocConsumer<OrgansListBloc, OrgansListState> organSelectionBlocConsumer() {
     return BlocConsumer<OrgansListBloc, OrgansListState>(
       builder: (context, state) {
         if (state is OrgansList) {
@@ -98,7 +95,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  BlocBuilder<CurrentChannelBloc, ChannelControlsState> ChannelControlsBlocBuilder() {
+  BlocBuilder<CurrentChannelBloc, ChannelControlsState> channelControlsBlocBuilder() {
     return BlocBuilder<CurrentChannelBloc, ChannelControlsState>(
               builder: (context, state) {
                 if (state is CurrentChannel) {
@@ -115,7 +112,7 @@ class _HomePageState extends State<HomePage> {
             );
   }
 
-  BlocBuilder<CurrentOrganBloc, CurrentOrganState> GraphAndMachinePropertiesBlocBuilder() {
+  BlocBuilder<CurrentOrganBloc, CurrentOrganState> graphAndMachinePropertiesBlocBuilder() {
     return BlocBuilder<CurrentOrganBloc, CurrentOrganState>(
               builder: (context, state) {
                 if (state is CurrentOrgan) {

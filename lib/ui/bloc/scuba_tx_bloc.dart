@@ -15,9 +15,7 @@ part 'scuba_tx_state.dart';
 class OrgansListBloc extends Bloc<OrgansListEvent, OrgansListState> {
   final ScubaRepository scubaRepository;
 
-  OrgansListBloc({
-    required this.scubaRepository,
-  }) : super(EmptyOrgansList()) {
+  OrgansListBloc({ required this.scubaRepository}) : super(EmptyOrgansList()) {
     on<OrgansListEvent>(organsListEmitter);
   }
 

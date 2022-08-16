@@ -18,20 +18,13 @@ class CSVDataSource extends ScubaDataSource {
     channelData1 = getChannel1Data();
     channelData2 = getChannel2Data();
     channelData3 = getChannel3Data();
-    defaultScubaBoxes = [
-      ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID1", temperature: "5º", gas: "40%", battery: "80%", organ: OrganType.liver),
-      ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID2", temperature: "2º", gas: "40%", battery: "90%", organ: OrganType.liver),
-      ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID3", temperature: "3º", gas: "100%", battery: "50%", organ: OrganType.pancreas),
-      ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID4", temperature: "4º", gas: "40%", battery: "50%", organ: OrganType.pancreas),
-      ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID5", temperature: "5º", gas: "100%", battery: "10%", organ: OrganType.heart),
-      ScubaBox(channelData1, channelData2, channelData3,
-          id: "ID6", temperature: "2º", gas: "100%", battery: "30%", organ: OrganType.heart),
-    ];
+    defaultScubaBoxes = [ScubaBox(channelData1, channelData2, channelData3,
+          id: "ID1", temperature: "5º", gas: "40%", battery: "80%", organ: OrganType.liver), ScubaBox(channelData1, channelData2, channelData3,
+          id: "ID2", temperature: "2º", gas: "40%", battery: "90%", organ: OrganType.liver),ScubaBox(channelData1, channelData2, channelData3,
+          id: "ID3", temperature: "3º", gas: "100%", battery: "50%", organ: OrganType.pancreas), ScubaBox(channelData1, channelData2, channelData3,
+          id: "ID4", temperature: "4º", gas: "40%", battery: "50%", organ: OrganType.pancreas), ScubaBox(channelData1, channelData2, channelData3,
+          id: "ID5", temperature: "5º", gas: "100%", battery: "10%", organ: OrganType.heart), ScubaBox(channelData1, channelData2, channelData3,
+          id: "ID6", temperature: "2º", gas: "100%", battery: "30%", organ: OrganType.heart),];
   }
 
   @override
@@ -49,18 +42,17 @@ class CSVDataSource extends ScubaDataSource {
   @override
   ScubaBox getScubaBoxById(String id) => defaultScubaBoxes.where((element) => element.id == id).toList()[0];
 
-
   @override
   List<ScubaBox> getScubaBoxByOrgan(OrganType organType) => defaultScubaBoxes.where((element) => element.organ == organType).toList();
 
   @override
   List<SmartAuditEvent> getSmartAuditEvents() {
     List<SmartAuditEvent> events = [
-      SmartAuditEvent(event: SmartAuditEventType.leak, channelData: getChannel1Data(), channel: 1, name: stringLeak),
-      SmartAuditEvent(event: SmartAuditEventType.blockage, channelData: getChannel2Data(), channel: 2, name: stringBlockage),
-      SmartAuditEvent(event: SmartAuditEventType.highFlow, channelData: getChannel3Data(), channel: 3, name: stringHighFlow),
-      SmartAuditEvent(event: SmartAuditEventType.highPressure, channelData: getChannel2Data(), channel: 2, name: stringHighPressure),
-      SmartAuditEvent(event: SmartAuditEventType.lowPressure, channelData: getChannel1Data(), channel: 1, name: stringLowPressure),
+      SmartAuditEvent(event: SmartAuditEventType.leak, channelData: getChannel1Data(), channel: 1, name: stringLeak, severity: SmartAuditEventSeverity.high),
+      SmartAuditEvent(event: SmartAuditEventType.blockage, channelData: getChannel2Data(), channel: 2, name: stringBlockage, severity: SmartAuditEventSeverity.high),
+      SmartAuditEvent(event: SmartAuditEventType.highFlow, channelData: getChannel3Data(), channel: 3, name: stringHighFlow, severity: SmartAuditEventSeverity.medium),
+      SmartAuditEvent(event: SmartAuditEventType.highPressure, channelData: getChannel2Data(), channel: 2, name: stringHighPressure, severity: SmartAuditEventSeverity.medium),
+      SmartAuditEvent(event: SmartAuditEventType.lowPressure, channelData: getChannel1Data(), channel: 1, name: stringLowPressure, severity: SmartAuditEventSeverity.medium),
     ];
 
     return events;

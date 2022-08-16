@@ -12,3 +12,5 @@ const stringHighPressure = "High Pressure";
 const stringLowPressure = "Low Pressure";
 const stringHighFlow = "High Flow";
 const stringLowFlow = "Low Flow";
+
+const stringAppName = "ScubaTx";
